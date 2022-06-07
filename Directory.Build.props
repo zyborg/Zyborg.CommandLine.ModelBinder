@@ -1,12 +1,36 @@
 <Project>
 
   <PropertyGroup>
+    <ThisRoot>Zyborg.CommandLine.ModelBinder</ThisRoot>
+    <ThisRepo>https://github.com/zyborg/$(ThisRoot)</ThisRepo>
     <ThisYear>$([System.DateTime]::Now.ToString("yyyy"))</ThisYear>
-    <Copyright>Copyright (C) $(ThisYear) Eugene Bekker.</Copyright>
-    <RepositoryUrl>https://github.com/zyborg/Zyborg.CommandLine.ModelBinder</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <Authors>https://github.com/zyborg/Zyborg.CommandLine.ModelBinder/graphs/contributors</Authors>
+  <PropertyGroup>
+
   </PropertyGroup>
+    <Copyright>Copyright (C) $(ThisYear) Eugene Bekker.</Copyright>
+    <RepositoryUrl>$(ThisRepo)</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Authors>https://github.com/zyborg/$(ThisRoot)/graphs/contributors</Authors>
+  <PropertyGroup>
+
+  </PropertyGroup>
+    <!-- deprecated:  https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets -->
+    <!--
+    <PackageLicenseUrl>https://github.com/zyborg/Zyborg.CommandLine.ModelBinder/blob/master/LICENSE</PackageLicenseUrl>
+    -->
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  <PropertyGroup>
+
+  </PropertyGroup>
+    <!-- deprecated:  https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#packageiconurl -->
+    <!--
+    <PackageIconUrl>https://avatars2.githubusercontent.com/u/22501173?s=88&amp;v=4</PackageIconUrl>
+    -->
+    <PackageIcon>zy-icon.png</PackageIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="res/img/zy-icon.png" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
 
   <Import Project="$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'Versions.props'))" />
 
