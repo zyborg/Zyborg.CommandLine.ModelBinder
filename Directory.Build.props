@@ -1,0 +1,13 @@
+<Project>
+
+  <PropertyGroup>
+    <ThisYear>$([System.DateTime]::Now.ToString("yyyy"))</ThisYear>
+    <Copyright>Copyright (C) $(ThisYear) Eugene Bekker.</Copyright>
+    <RepositoryUrl>https://github.com/zyborg/Zyborg.CommandLine.ModelBinder</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Authors>https://github.com/zyborg/Zyborg.CommandLine.ModelBinder/graphs/contributors</Authors>
+  </PropertyGroup>
+
+  <Import Project="$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'Versions.props'))" />
+
+</Project>

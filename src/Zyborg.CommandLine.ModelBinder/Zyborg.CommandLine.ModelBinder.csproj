@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+
+  <!--
+   - NuGet Pack
+   -    https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
+   -->
+  <PropertyGroup>
+    <!-- Some properties are inherited from repo-wide settings -->
+    <PackageId>Zyborg.CommandLine.ModelBinder</PackageId>
+    <Description>A declarative approach for CLI parsing atop System.CommandLine</Description>
+    <PackageLicenseUrl>https://github.com/zyborg/Zyborg.CommandLine.ModelBinder/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/zyborg/Zyborg.CommandLine.ModelBinder/tree/master/src/Zyborg.CommandLine.ModelBinder</PackageProjectUrl>
+    <PackageIconUrl>https://avatars2.githubusercontent.com/u/22501173?s=88&amp;v=4</PackageIconUrl>
+    <PackageTags>cli</PackageTags>
+  </PropertyGroup>
+
+</Project>
