@@ -6,6 +6,8 @@
         <VersionMajor>0</VersionMajor>
         <VersionMinor>7</VersionMinor>
         <VersionPatch>0</VersionPatch>
+        <!-- this is used for prerelease tag -->
+        <VersionSuffix>PREVIEW</VersionSuffix>
         <!-- this should be overridden by CI automation -->
         <VersionBuild>0</VersionBuild>
 
