@@ -16,8 +16,8 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-
     steps:
+
     - name: Checkout latest
       uses: actions/checkout@v3
 
@@ -80,4 +80,51 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: package
-        path: src/CommandLine.ModelBinder/bin/Release
+        path: src/Zyborg.CommandLine.ModelBinder/bin/Release
+
+  push-nuget-preview:
+    needs: build
+    if: (github.event_name == 'create')
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: download package from artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: package
+
+      - name: setup nuget
+        uses: nuget/setup-nuget@v1
+
+      - name: register nuget repo
+        ## As per:
+        ##  https://help.github.com/en/articles/configuring-nuget-for-use-with-github-package-registry
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          nuget sources Add -Name "GPR" \
+            -Source "https://nuget.pkg.github.com/ebekker/index.json" \
+            -UserName ebekker -Password $GITHUB_TOKEN
+          find . -name *.nupkg
+          nuget setapikey $GITHUB_TOKEN -Source "GPR"
+      - name: publish
+        run:  nuget push package/Zyborg.CommandLine.ModelBinder*.nupkg -Source GPR 
+
+  push-nuget-release:
+    needs: build
+    if: (github.event_name == 'release')
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: download package from artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: package
+
+      - name: setup nuget
+        uses: nuget/setup-nuget@v1
+
+      - name: publish
+        env:
+          NUGET_TOKEN: ${{ secrets.NUGET_TOKEN }}
+        run: nuget push package/Zyborg.CommandLine.ModelBinder*.nupkg -Source nuget.org -ApiKey $NUGET_TOKEN
