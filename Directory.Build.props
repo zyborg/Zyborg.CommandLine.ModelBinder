@@ -29,7 +29,7 @@
     <PackageIcon>zy-icon.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="res/img/zy-icon.png" Pack="true" Visible="false" PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)res/img/zy-icon.png" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
 
   <Import Project="$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', 'Versions.props'))" />
