@@ -114,6 +114,9 @@ jobs:
     needs: build
     if: (github.event_name == 'release')
     runs-on: ubuntu-latest
+    environment:
+      name: nuget.org
+      url: https://www.nuget.org/packages/Zyborg.CommandLine.ModelBinder/
     steps:
 
       - name: download package from artifact
