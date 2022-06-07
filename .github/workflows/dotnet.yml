@@ -1,0 +1,77 @@
+name: .NET
+
+on:
+  push:
+    branches: [ "main" ]
+    tags-ignore: v=*
+  pull_request:
+    branches: [ "main" ]
+  create:
+    tags: v=*
+  release:
+    types: [published]
+    tags: v=*
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout latest
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Extract version base
+      id: extract_version_base
+      shell: pwsh
+      env:
+        ## set-env is no longer considered safe:
+        ##    https://github.blog/changelog/2020-10-01-github-actions-deprecating-set-env-and-add-path-commands/
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      run: |
+        ## Need to run this once to get the dotnet init message out of the way
+        dotnet msbuild ./Versions.props /t:DumpVersions /nologo
+        
+        $vdumpJson = & dotnet msbuild ./Versions.props /t:DumpVersions /nologo
+        Write-Output "Got Version Dump JSON:"
+        Write-Output $vdumpJson
+        
+        $vdump = $vdumpJson | ConvertFrom-Json
+        Write-Output "Got Version Dump:"
+        Write-Output $vdump
+        
+        ## Export as output and ENV VARS for subsequent steps
+        $versionBase = "$($vdump.Major).$($vdump.Minor).$($vdump.Patch)"
+        Write-Host "Found matching Tag Version info:"
+        Write-Host "::set-output name=version_base::$versionBase"
+        Write-Host "::set-env name=VERSION_BASE::$versionBase"
+
+    - name: Compute build nums
+      uses: zyborg/gh-action-buildnum@v1
+      with:
+        gist_token: ${{ secrets.GIST_TOKEN }}
+        version_key: ${{ steps.extract_version_base.outputs.version_base }}
+        set_env: true
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore --configuration Release /p:VersionBuild=$env:BUILDNUM_FOR_VERSION
+    - name: Pack
+      run: dotnet pack  --no-restore --configuration Release /p:VersionBuild=$env:BUILDNUM_FOR_VERSION
+
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+    - name: Upload package as artifact
+      if: startsWith(github.ref, 'refs/tags/v=')
+      uses: actions/upload-artifact@v1
+      with:
+        name: package
+        path: src/CommandLine.ModelBinder/bin/Release
