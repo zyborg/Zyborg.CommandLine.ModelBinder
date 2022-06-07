@@ -58,13 +58,19 @@ jobs:
         version_key: ${{ steps.extract_version_base.outputs.version_base }}
         set_env: true
 
+    - name: Dump build nums
+      shell: pwsh
+      run: |
+        Write-Host "Computed build num: $($env:BUILDNUM_FOR_VERSION)"
+
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build
-      run: dotnet build --no-restore --configuration Release /p:VersionBuild=$env:BUILDNUM_FOR_VERSION
-    - name: Pack
-      run: dotnet pack  --no-restore --configuration Release /p:VersionBuild=$env:BUILDNUM_FOR_VERSION
+    - name: Build & pack
+      shell: pwsh
+      run: |
+        dotnet build --no-restore --configuration Release /p:VersionBuild=$env:BUILDNUM_FOR_VERSION
+        dotnet pack  --no-restore --configuration Release /p:VersionBuild=$env:BUILDNUM_FOR_VERSION
 
     - name: Test
       run: dotnet test --no-build --verbosity normal
