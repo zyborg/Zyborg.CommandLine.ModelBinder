@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Humanizer;
 
 namespace System.CommandLine.ModelBinder;
@@ -24,9 +24,9 @@ public sealed class OptionAttribute : Attribute
 
     public bool AllowMultipleArguemtnsPerToken { get; set; }
 
-    public int? MinValues { get; set; }
-    public int? MaxValues { get; set; }
-    public Arity? MinMaxValues { get; set; }
+    public int MinValues { get; set; }
+    public int MaxValues { get; set; }
+    public Arity MinMaxValues { get; set; }
 
     public bool IsHidden { get; set; }
     public bool IsRequired { get; set; }
@@ -85,9 +85,13 @@ public sealed class OptionAttribute : Attribute
         option.IsRequired = IsRequired;
 
         if (LegalFileNamesOnly)
+        {
             option.LegalFileNamesOnly();
+        }
         else if (LegalFIlePathsOnly)
+        {
             option.LegalFilePathsOnly();
+        }
         else if (ExistingOnly)
         {
             if (option is Option<FileInfo> ofi) ofi.ExistingOnly();
@@ -97,13 +101,16 @@ public sealed class OptionAttribute : Attribute
                 throw new NotImplementedException("TODO: need to implement generic ext method call");
         }
 
-        if (MinValues != null || MaxValues != null)
+        if (MinValues > -1 || MaxValues > -1)
         {
-            option.Arity = new ArgumentArity(MinValues ?? 0, MaxValues ?? int.MaxValue);
+            MinValues = MinValues > -1 ? MinValues : 0;
+            MaxValues = MaxValues > -1 ? MaxValues : int.MaxValue;
+
+            option.Arity = new ArgumentArity(MinValues, MaxValues);
         }
-        else if (MinMaxValues != null)
+        else
         {
-            option.Arity = MinMaxValues.Value switch
+            option.Arity = MinMaxValues switch
             {
                 Arity.Zero => ArgumentArity.Zero,
                 Arity.ZeroOrOne => ArgumentArity.ZeroOrOne,

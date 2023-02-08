@@ -4,8 +4,8 @@
         <!-- these should be manually bumped as needed to
              indicate the current version being worked on -->
         <VersionMajor>0</VersionMajor>
-        <VersionMinor>7</VersionMinor>
-        <VersionPatch>5</VersionPatch>
+        <VersionMinor>8</VersionMinor>
+        <VersionPatch>0</VersionPatch>
         <!-- this is used for prerelease tag -->
         <VersionSuffix>PREVIEW</VersionSuffix>
         <!-- this should be overridden by CI automation -->

@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Humanizer;
 
 namespace System.CommandLine.ModelBinder;
@@ -18,9 +18,9 @@ public sealed class ArgumentAttribute : Attribute
 
     public string? HelpName { get; set; }
 
-    public int? MinValues { get; set; }
-    public int? MaxValues { get; set; }
-    public Arity? MinMaxValues { get; set; }
+    public int MinValues { get; set; } = int.MinValue;
+    public int MaxValues { get; set; } = int.MinValue;
+    public Arity MinMaxValues { get; set; } = Arity.Zero;
 
     public bool IsHidden { get; private set; }
     public bool IsRequired { get; private set; }
@@ -58,9 +58,13 @@ public sealed class ArgumentAttribute : Attribute
         argument.IsHidden = IsHidden;
 
         if (LegalFileNamesOnly)
+        {
             argument.LegalFileNamesOnly();
+        }
         else if (LegalFIlePathsOnly)
+        {
             argument.LegalFilePathsOnly();
+        }
         else if (ExistingOnly)
         {
             if (argument is Argument<FileInfo> afi) afi.ExistingOnly();
@@ -70,13 +74,16 @@ public sealed class ArgumentAttribute : Attribute
                 throw new NotImplementedException("TODO: need to implement generic ext method call");
         }
 
-        if (MinValues != null || MaxValues != null)
+        if (MinValues > -1 || MaxValues > -1)
         {
-            argument.Arity = new ArgumentArity(MinValues ?? 0, MaxValues ?? int.MaxValue);
+            MinValues = MinValues > -1 ? MinValues : 0;
+            MaxValues = MaxValues > -1 ? MaxValues : int.MaxValue;
+
+            argument.Arity = new ArgumentArity(MinValues, MaxValues);
         }
-        else if (MinMaxValues != null)
+        else
         {
-            argument.Arity = MinMaxValues.Value switch
+            argument.Arity = MinMaxValues switch
             {
                 Arity.Zero => ArgumentArity.Zero,
                 Arity.ZeroOrOne => ArgumentArity.ZeroOrOne,
